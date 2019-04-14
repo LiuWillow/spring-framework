@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -211,7 +211,7 @@ final class ConfigurationClass {
 	}
 
 	public void validate(ProblemReporter problemReporter) {
-		// A configuration class may not be final (CGLIB limitation)
+		// Configuration的类不能是final的，因为@Configuration的类会被CGLIB代理，保证@Bean里的对象只生成一次
 		if (getMetadata().isAnnotated(Configuration.class.getName())) {
 			if (getMetadata().isFinal()) {
 				problemReporter.error(new FinalConfigurationProblem());

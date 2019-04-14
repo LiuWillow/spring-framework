@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -99,10 +99,10 @@ class ConfigurationClassEnhancer {
 		if (EnhancedConfiguration.class.isAssignableFrom(configClass)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(String.format("Ignoring request to enhance %s as it has " +
-						"already been enhanced. This usually indicates that more than one " +
-						"ConfigurationClassPostProcessor has been registered (e.g. via " +
-						"<context:annotation-config>). This is harmless, but you may " +
-						"want check your configuration and remove one CCPP if possible",
+								"already been enhanced. This usually indicates that more than one " +
+								"ConfigurationClassPostProcessor has been registered (e.g. via " +
+								"<context:annotation-config>). This is harmless, but you may " +
+								"want check your configuration and remove one CCPP if possible",
 						configClass.getName()));
 			}
 			return configClass;
@@ -315,12 +315,12 @@ class ConfigurationClassEnhancer {
 		@Override
 		@Nullable
 		public Object intercept(Object enhancedConfigInstance, Method beanMethod, Object[] beanMethodArgs,
-					MethodProxy cglibMethodProxy) throws Throwable {
+								MethodProxy cglibMethodProxy) throws Throwable {
 
 			ConfigurableBeanFactory beanFactory = getBeanFactory(enhancedConfigInstance);
 			String beanName = BeanAnnotationHelper.determineBeanNameFor(beanMethod);
 
-			// Determine whether this bean is a scoped-proxy
+			// 看看有没有Scope
 			Scope scope = AnnotatedElementUtils.findMergedAnnotation(beanMethod, Scope.class);
 			if (scope != null && scope.proxyMode() != ScopedProxyMode.NO) {
 				String scopedBeanName = ScopedProxyCreator.getTargetBeanName(beanName);
@@ -328,7 +328,7 @@ class ConfigurationClassEnhancer {
 					beanName = scopedBeanName;
 				}
 			}
-
+			//处理bean方法中调用了另外一个bean方法的情况
 			// To handle the case of an inter-bean method reference, we must explicitly check the
 			// container for already cached instances.
 
@@ -347,7 +347,8 @@ class ConfigurationClassEnhancer {
 					return enhanceFactoryBean(factoryBean, beanMethod.getReturnType(), beanFactory, beanName);
 				}
 			}
-
+			//通过判断当前调用方法是否是 当前容器调用的工厂方法，如果是，则实例化一个对象，如果不是，说明已经实例化过了，
+			// 则从工厂中拿出来
 			if (isCurrentlyInvokedFactoryMethod(beanMethod)) {
 				// The factory is calling the bean method in order to instantiate and register the bean
 				// (i.e. via a getBean() call) -> invoke the super implementation of the method to actually
@@ -369,7 +370,7 @@ class ConfigurationClassEnhancer {
 		}
 
 		private Object resolveBeanReference(Method beanMethod, Object[] beanMethodArgs,
-				ConfigurableBeanFactory beanFactory, String beanName) {
+											ConfigurableBeanFactory beanFactory, String beanName) {
 
 			// The user (i.e. not the factory) is requesting this bean through a call to
 			// the bean method, direct or indirect. The bean may have already been marked
@@ -399,7 +400,7 @@ class ConfigurationClassEnhancer {
 					if (beanInstance.equals(null)) {
 						if (logger.isDebugEnabled()) {
 							logger.debug(String.format("@Bean method %s.%s called as bean reference " +
-									"for type [%s] returned null bean; resolving to null value.",
+											"for type [%s] returned null bean; resolving to null value.",
 									beanMethod.getDeclaringClass().getSimpleName(), beanMethod.getName(),
 									beanMethod.getReturnType().getName()));
 						}
@@ -407,7 +408,7 @@ class ConfigurationClassEnhancer {
 					}
 					else {
 						String msg = String.format("@Bean method %s.%s called as bean reference " +
-								"for type [%s] but overridden by non-compatible bean instance of type [%s].",
+										"for type [%s] but overridden by non-compatible bean instance of type [%s].",
 								beanMethod.getDeclaringClass().getSimpleName(), beanMethod.getName(),
 								beanMethod.getReturnType().getName(), beanInstance.getClass().getName());
 						try {
@@ -488,7 +489,7 @@ class ConfigurationClassEnhancer {
 		 * it will not be proxied. This too is aligned with the way XML configuration works.
 		 */
 		private Object enhanceFactoryBean(final Object factoryBean, Class<?> exposedType,
-				final ConfigurableBeanFactory beanFactory, final String beanName) {
+										  final ConfigurableBeanFactory beanFactory, final String beanName) {
 
 			try {
 				Class<?> clazz = factoryBean.getClass();
@@ -524,7 +525,7 @@ class ConfigurationClassEnhancer {
 		}
 
 		private Object createInterfaceProxyForFactoryBean(final Object factoryBean, Class<?> interfaceType,
-				final ConfigurableBeanFactory beanFactory, final String beanName) {
+														  final ConfigurableBeanFactory beanFactory, final String beanName) {
 
 			return Proxy.newProxyInstance(
 					factoryBean.getClass().getClassLoader(), new Class<?>[] {interfaceType},
@@ -537,7 +538,7 @@ class ConfigurationClassEnhancer {
 		}
 
 		private Object createCglibProxyForFactoryBean(final Object factoryBean,
-				final ConfigurableBeanFactory beanFactory, final String beanName) {
+													  final ConfigurableBeanFactory beanFactory, final String beanName) {
 
 			Enhancer enhancer = new Enhancer();
 			enhancer.setSuperclass(factoryBean.getClass());

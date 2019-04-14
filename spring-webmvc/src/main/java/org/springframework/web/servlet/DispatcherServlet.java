@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2019 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -850,12 +850,12 @@ public class DispatcherServlet extends FrameworkServlet {
 				catch (ClassNotFoundException ex) {
 					throw new BeanInitializationException(
 							"Could not find DispatcherServlet's default strategy class [" + className +
-							"] for interface [" + key + "]", ex);
+									"] for interface [" + key + "]", ex);
 				}
 				catch (LinkageError err) {
 					throw new BeanInitializationException(
 							"Unresolvable class definition for DispatcherServlet's default strategy class [" +
-							className + "] for interface [" + key + "]", err);
+									className + "] for interface [" + key + "]", err);
 				}
 			}
 			return strategies;
@@ -881,6 +881,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 
 	/**
+	 * 请求会进入到这个方法
 	 * Exposes the DispatcherServlet-specific request attributes and delegates to {@link #doDispatch}
 	 * for the actual dispatching.
 	 */
@@ -922,6 +923,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		try {
+			//分发请求
 			doDispatch(request, response);
 		}
 		finally {
@@ -957,9 +959,11 @@ public class DispatcherServlet extends FrameworkServlet {
 			Exception dispatchException = null;
 
 			try {
+				//检查上传文件
 				processedRequest = checkMultipart(request);
 				multipartRequestParsed = (processedRequest != request);
 
+				//获取handlerChain
 				// Determine handler for the current request.
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) {
@@ -1047,8 +1051,8 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * either a ModelAndView or an Exception to be resolved to a ModelAndView.
 	 */
 	private void processDispatchResult(HttpServletRequest request, HttpServletResponse response,
-			@Nullable HandlerExecutionChain mappedHandler, @Nullable ModelAndView mv,
-			@Nullable Exception exception) throws Exception {
+									   @Nullable HandlerExecutionChain mappedHandler, @Nullable ModelAndView mv,
+									   @Nullable Exception exception) throws Exception {
 
 		boolean errorView = false;
 
@@ -1119,8 +1123,8 @@ public class DispatcherServlet extends FrameworkServlet {
 				logger.debug("Request is already a MultipartHttpServletRequest - if not in a forward, " +
 						"this typically results from an additional MultipartFilter in web.xml");
 			}
-			else if (hasMultipartException(request)) {
-				logger.debug("Multipart resolution previously failed for current request - " +
+			else if (hasMultipartException(request) ) {
+				logger.debug("Multipart resolution failed for current request before - " +
 						"skipping re-resolution for undisturbed error rendering");
 			}
 			else {
@@ -1180,11 +1184,18 @@ public class DispatcherServlet extends FrameworkServlet {
 	@Nullable
 	protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
 		if (this.handlerMappings != null) {
+			//遍历请求映射器
 			for (HandlerMapping hm : this.handlerMappings) {
 				if (logger.isTraceEnabled()) {
 					logger.trace(
 							"Testing handler map [" + hm + "] in DispatcherServlet with name '" + getServletName() + "'");
 				}
+				/**
+				 * 判断controller类型，controler有三种实现方法
+				 * 1、@Controller，方法上加RequestMapping，mapping对应一个方法
+				 * 2、实现Controller接口，实现handleRequest方法，在类上面加@RequestMapping，mapping对应一个类
+				 * 3、
+				 */
 				HandlerExecutionChain handler = hm.getHandler(request);
 				if (handler != null) {
 					return handler;
@@ -1246,7 +1257,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	@Nullable
 	protected ModelAndView processHandlerException(HttpServletRequest request, HttpServletResponse response,
-			@Nullable Object handler, Exception ex) throws Exception {
+												   @Nullable Object handler, Exception ex) throws Exception {
 
 		// Check registered HandlerExceptionResolvers...
 		ModelAndView exMv = null;
@@ -1360,7 +1371,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	@Nullable
 	protected View resolveViewName(String viewName, @Nullable Map<String, Object> model,
-			Locale locale, HttpServletRequest request) throws Exception {
+								   Locale locale, HttpServletRequest request) throws Exception {
 
 		if (this.viewResolvers != null) {
 			for (ViewResolver viewResolver : this.viewResolvers) {
@@ -1374,7 +1385,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	private void triggerAfterCompletion(HttpServletRequest request, HttpServletResponse response,
-			@Nullable HandlerExecutionChain mappedHandler, Exception ex) throws Exception {
+										@Nullable HandlerExecutionChain mappedHandler, Exception ex) throws Exception {
 
 		if (mappedHandler != null) {
 			mappedHandler.triggerAfterCompletion(request, response, ex);
@@ -1388,7 +1399,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @param attributesSnapshot the snapshot of the request attributes before the include
 	 */
 	@SuppressWarnings("unchecked")
-	private void restoreAttributesAfterInclude(HttpServletRequest request, Map<?, ?> attributesSnapshot) {
+	private void restoreAttributesAfterInclude(HttpServletRequest request, Map<?,?> attributesSnapshot) {
 		// Need to copy into separate Collection here, to avoid side effects
 		// on the Enumeration when removing attributes.
 		Set<String> attrsToCheck = new HashSet<>();
@@ -1407,7 +1418,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		// or removing the attribute, respectively, if appropriate.
 		for (String attrName : attrsToCheck) {
 			Object attrValue = attributesSnapshot.get(attrName);
-			if (attrValue == null) {
+			if (attrValue == null){
 				request.removeAttribute(attrName);
 			}
 			else if (attrValue != request.getAttribute(attrName)) {

@@ -55,7 +55,7 @@ import static org.junit.Assert.*;
 @WebAppConfiguration
 public class MockMvcHtmlUnitDriverBuilderTests {
 
-	private static final String EXPECTED_BODY = "MockMvcHtmlUnitDriverBuilderTests mvc";
+	private static final String EXPECTED_BODY = "MockMvcHtmlUnitDriverBuilderTests boot";
 
 	@Autowired
 	private WebApplicationContext wac;

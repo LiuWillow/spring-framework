@@ -23,7 +23,7 @@ import org.springframework.beans.factory.xml.AbstractSimpleBeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 
 /**
- * Parse the <mvc:groovy-configurer> MVC namespace element and register a
+ * Parse the <boot:groovy-configurer> MVC namespace element and register a
  * GroovyConfigurer bean
  *
  * @author Sebastien Deleuze

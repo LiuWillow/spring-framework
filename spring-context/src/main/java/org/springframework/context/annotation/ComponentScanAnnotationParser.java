@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -64,7 +64,7 @@ class ComponentScanAnnotationParser {
 
 
 	public ComponentScanAnnotationParser(Environment environment, ResourceLoader resourceLoader,
-			BeanNameGenerator beanNameGenerator, BeanDefinitionRegistry registry) {
+										 BeanNameGenerator beanNameGenerator, BeanDefinitionRegistry registry) {
 
 		this.environment = environment;
 		this.resourceLoader = resourceLoader;
@@ -72,16 +72,20 @@ class ComponentScanAnnotationParser {
 		this.registry = registry;
 	}
 
-
+	//这里自定义了一个scanner，因此之前初始化的scanner其实没什么卵用
+	//1、初始化scanner，解析包名，将懒加载、代理模式、过滤器之类的设置到scanner中
+	//2、调用scanner.doScan开始扫描包，获取元数据资源，扫描出交给Spring的基础类（Service Component等，包括配置类本身），然后初始化bd的默认值，
+	//将类上面的基础注解@Lazy  @Primary之类的数据注入到bd中，然后把bd放到工厂中
 	public Set<BeanDefinitionHolder> parse(AnnotationAttributes componentScan, final String declaringClass) {
 		ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(this.registry,
 				componentScan.getBoolean("useDefaultFilters"), this.environment, this.resourceLoader);
 
+		//判断是否是同一个类型
 		Class<? extends BeanNameGenerator> generatorClass = componentScan.getClass("nameGenerator");
 		boolean useInheritedGenerator = (BeanNameGenerator.class == generatorClass);
 		scanner.setBeanNameGenerator(useInheritedGenerator ? this.beanNameGenerator :
 				BeanUtils.instantiateClass(generatorClass));
-
+		//判断scopeProxyMode
 		ScopedProxyMode scopedProxyMode = componentScan.getEnum("scopedProxy");
 		if (scopedProxyMode != ScopedProxyMode.DEFAULT) {
 			scanner.setScopedProxyMode(scopedProxyMode);
@@ -92,7 +96,7 @@ class ComponentScanAnnotationParser {
 		}
 
 		scanner.setResourcePattern(componentScan.getString("resourcePattern"));
-
+		//处理filter
 		for (AnnotationAttributes filter : componentScan.getAnnotationArray("includeFilters")) {
 			for (TypeFilter typeFilter : typeFiltersFor(filter)) {
 				scanner.addIncludeFilter(typeFilter);
@@ -103,13 +107,14 @@ class ComponentScanAnnotationParser {
 				scanner.addExcludeFilter(typeFilter);
 			}
 		}
-
+		//懒加载
 		boolean lazyInit = componentScan.getBoolean("lazyInit");
 		if (lazyInit) {
 			scanner.getBeanDefinitionDefaults().setLazyInit(true);
 		}
 
 		Set<String> basePackages = new LinkedHashSet<>();
+		//获取Component的基础包名放入basePackages，去重
 		String[] basePackagesArray = componentScan.getStringArray("basePackages");
 		for (String pkg : basePackagesArray) {
 			String[] tokenized = StringUtils.tokenizeToStringArray(this.environment.resolvePlaceholders(pkg),
@@ -129,6 +134,9 @@ class ComponentScanAnnotationParser {
 				return declaringClass.equals(className);
 			}
 		});
+		//上面都是在解析包名，然后将懒加载、过滤器和代理模式之类的注入到scanner中
+		//这里开始扫描包名，获取元数据资源，扫描出交给Spring的基础类（Service Component等，包括配置类本身），然后初始化bd的默认值，
+		//将类上面的基础注解@Lazy  @Primary之类的数据注入到bd中，然后把bd放到工厂中
 		return scanner.doScan(StringUtils.toStringArray(basePackages));
 	}
 

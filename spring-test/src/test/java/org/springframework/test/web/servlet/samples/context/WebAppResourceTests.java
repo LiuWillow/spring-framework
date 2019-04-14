@@ -68,7 +68,7 @@ public class WebAppResourceTests {
 			.andExpect(forwardedUrl("/WEB-INF/layouts/standardLayout.jsp"));
 	}
 
-	// Resources served via <mvc:resources/>
+	// Resources served via <boot:resources/>
 
 	@Test
 	public void resourceRequest() throws Exception {
@@ -77,7 +77,7 @@ public class WebAppResourceTests {
 			.andExpect(content().string(containsString("Spring={};")));
 	}
 
-	// Forwarded to the "default" servlet via <mvc:default-servlet-handler/>
+	// Forwarded to the "default" servlet via <boot:default-servlet-handler/>
 
 	@Test
 	public void resourcesViaDefaultServlet() throws Exception {

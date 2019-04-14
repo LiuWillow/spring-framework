@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-	<!-- <mvc:cors /> element before <mvc:annotation-driven /> one -->
+	<!-- <boot:cors /> element before <boot:annotation-driven /> one -->
 	<mvc:cors>
 		<mvc:mapping path="/**" />
 	</mvc:cors>

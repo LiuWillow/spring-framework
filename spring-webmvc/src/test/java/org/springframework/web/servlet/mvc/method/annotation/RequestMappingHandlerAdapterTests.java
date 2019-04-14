@@ -364,7 +364,7 @@ public class RequestMappingHandlerAdapterTests {
 	}
 
 
-	@ControllerAdvice({"org.springframework.web.servlet.mvc.method.annotation", "java.lang"})
+	@ControllerAdvice({"org.springframework.web.servlet.boot.method.annotation", "java.lang"})
 	private static class ModelAttributePackageAdvice {
 
 		@SuppressWarnings("unused")

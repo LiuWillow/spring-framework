@@ -8,7 +8,7 @@
 
 	<!--
 		View resolution finds the ContentNegotiationManager created by or
-		registered with <mvc:annotation-driven>. Or in its absence simply declare it.
+		registered with <boot:annotation-driven>. Or in its absence simply declare it.
 	-->
 
 	<bean id="mvcContentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean"/>

@@ -88,7 +88,7 @@ public class ForwardedHeaderFilterTests {
 	@Test
 	public void contextPathWithForwardedPrefix() throws Exception {
 		this.request.addHeader(X_FORWARDED_PREFIX, "/prefix");
-		this.request.setContextPath("/mvc-showcase");
+		this.request.setContextPath("/boot-showcase");
 
 		String actual = filterAndGetContextPath();
 		assertEquals("/prefix", actual);
@@ -97,7 +97,7 @@ public class ForwardedHeaderFilterTests {
 	@Test
 	public void contextPathWithForwardedPrefixTrailingSlash() throws Exception {
 		this.request.addHeader(X_FORWARDED_PREFIX, "/prefix/");
-		this.request.setContextPath("/mvc-showcase");
+		this.request.setContextPath("/boot-showcase");
 
 		String actual = filterAndGetContextPath();
 		assertEquals("/prefix", actual);
@@ -218,7 +218,7 @@ public class ForwardedHeaderFilterTests {
 
 	@Test
 	public void forwardedRequest() throws Exception {
-		this.request.setRequestURI("/mvc-showcase");
+		this.request.setRequestURI("/boot-showcase");
 		this.request.addHeader(X_FORWARDED_PROTO, "https");
 		this.request.addHeader(X_FORWARDED_HOST, "84.198.58.199");
 		this.request.addHeader(X_FORWARDED_PORT, "443");
@@ -227,7 +227,7 @@ public class ForwardedHeaderFilterTests {
 		this.filter.doFilter(this.request, new MockHttpServletResponse(), this.filterChain);
 		HttpServletRequest actual = (HttpServletRequest) this.filterChain.getRequest();
 
-		assertEquals("https://84.198.58.199/mvc-showcase", actual.getRequestURL().toString());
+		assertEquals("https://84.198.58.199/boot-showcase", actual.getRequestURL().toString());
 		assertEquals("https", actual.getScheme());
 		assertEquals("84.198.58.199", actual.getServerName());
 		assertEquals(443, actual.getServerPort());
@@ -241,7 +241,7 @@ public class ForwardedHeaderFilterTests {
 
 	@Test
 	public void forwardedRequestInRemoveOnlyMode() throws Exception {
-		this.request.setRequestURI("/mvc-showcase");
+		this.request.setRequestURI("/boot-showcase");
 		this.request.addHeader(X_FORWARDED_PROTO, "https");
 		this.request.addHeader(X_FORWARDED_HOST, "84.198.58.199");
 		this.request.addHeader(X_FORWARDED_PORT, "443");
@@ -251,7 +251,7 @@ public class ForwardedHeaderFilterTests {
 		this.filter.doFilter(this.request, new MockHttpServletResponse(), this.filterChain);
 		HttpServletRequest actual = (HttpServletRequest) this.filterChain.getRequest();
 
-		assertEquals("http://localhost/mvc-showcase", actual.getRequestURL().toString());
+		assertEquals("http://localhost/boot-showcase", actual.getRequestURL().toString());
 		assertEquals("http", actual.getScheme());
 		assertEquals("localhost", actual.getServerName());
 		assertEquals(80, actual.getServerPort());
@@ -266,29 +266,29 @@ public class ForwardedHeaderFilterTests {
 	@Test
 	public void requestUriWithForwardedPrefix() throws Exception {
 		this.request.addHeader(X_FORWARDED_PREFIX, "/prefix");
-		this.request.setRequestURI("/mvc-showcase");
+		this.request.setRequestURI("/boot-showcase");
 
 		HttpServletRequest actual = filterAndGetWrappedRequest();
-		assertEquals("http://localhost/prefix/mvc-showcase", actual.getRequestURL().toString());
+		assertEquals("http://localhost/prefix/boot-showcase", actual.getRequestURL().toString());
 	}
 
 	@Test
 	public void requestUriWithForwardedPrefixTrailingSlash() throws Exception {
 		this.request.addHeader(X_FORWARDED_PREFIX, "/prefix/");
-		this.request.setRequestURI("/mvc-showcase");
+		this.request.setRequestURI("/boot-showcase");
 
 		HttpServletRequest actual = filterAndGetWrappedRequest();
-		assertEquals("http://localhost/prefix/mvc-showcase", actual.getRequestURL().toString());
+		assertEquals("http://localhost/prefix/boot-showcase", actual.getRequestURL().toString());
 	}
 	
 	@Test
 	public void requestURLNewStringBuffer() throws Exception { 
 		this.request.addHeader(X_FORWARDED_PREFIX, "/prefix/");
-		this.request.setRequestURI("/mvc-showcase");
+		this.request.setRequestURI("/boot-showcase");
 
 		HttpServletRequest actual = filterAndGetWrappedRequest();
 		actual.getRequestURL().append("?key=value");
-		assertEquals("http://localhost/prefix/mvc-showcase", actual.getRequestURL().toString());
+		assertEquals("http://localhost/prefix/boot-showcase", actual.getRequestURL().toString());
 	}
 
 	@Test

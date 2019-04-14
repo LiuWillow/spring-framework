@@ -29,7 +29,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
 
 /**
- * Parse the <mvc:freemarker-configurer> MVC namespace element and register
+ * Parse the <boot:freemarker-configurer> MVC namespace element and register
  * FreeMarkerConfigurer bean
  *
  * @author Rossen Stoyanchev

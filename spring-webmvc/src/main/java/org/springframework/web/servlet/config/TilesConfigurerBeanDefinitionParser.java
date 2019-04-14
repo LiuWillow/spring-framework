@@ -29,7 +29,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
 
 /**
- * Parse the <mvc:tiles-configurer> MVC namespace element and register
+ * Parse the <boot:tiles-configurer> MVC namespace element and register
  * a corresponding TilesConfigurer bean.
 
  * @author Rossen Stoyanchev

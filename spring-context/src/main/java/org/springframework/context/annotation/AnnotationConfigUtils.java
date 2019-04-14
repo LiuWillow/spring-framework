@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -123,7 +123,7 @@ public class AnnotationConfigUtils {
 
 	private static final boolean jpaPresent =
 			ClassUtils.isPresent("javax.persistence.EntityManagerFactory", AnnotationConfigUtils.class.getClassLoader()) &&
-			ClassUtils.isPresent(PERSISTENCE_ANNOTATION_PROCESSOR_CLASS_NAME, AnnotationConfigUtils.class.getClassLoader());
+					ClassUtils.isPresent(PERSISTENCE_ANNOTATION_PROCESSOR_CLASS_NAME, AnnotationConfigUtils.class.getClassLoader());
 
 
 	/**
@@ -135,6 +135,7 @@ public class AnnotationConfigUtils {
 	}
 
 	/**
+	 * 这个方法开始注册processorses
 	 * Register all relevant annotation post processors in the given registry.
 	 * @param registry the registry to operate on
 	 * @param source the configuration source element (already extracted)
@@ -144,7 +145,7 @@ public class AnnotationConfigUtils {
 	 */
 	public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
-
+		//从registry强转为GenericApplicationContext，到里头获取beanFactory
 		DefaultListableBeanFactory beanFactory = unwrapDefaultListableBeanFactory(registry);
 		if (beanFactory != null) {
 			if (!(beanFactory.getDependencyComparator() instanceof AnnotationAwareOrderComparator)) {
@@ -157,6 +158,17 @@ public class AnnotationConfigUtils {
 
 		Set<BeanDefinitionHolder> beanDefs = new LinkedHashSet<>(8);
 
+		/**
+		 * 下面在beanFactory里注册了四个BeanPostProcessor和一个BeanFactoryPostProcessor/BeanDefinitionRegistryPostProcessor
+		 * 还有两个不知道干嘛的，一共七个类
+		 * ConfigurationClassPostProcessor      BeanDefinitionRegistryPostProcessor/beanFactoryPostProcessor
+		 * AutowiredAnnotationBeanPostProcessor   BeanPostProcessor
+		 * RequiredAnnotationBeanPostProcessor    BeanPostProcessor
+		 * CommonAnnotationBeanPostProcessor  BeanPostProcessor
+		 * PersistenceAnnotationBeanPostProcessor   BeanPostProcessor    JPA里用的，一般不注册
+		 * DefaultEventListenerFactory   EventListenerFactory
+		 * EventListenerMethodProcessor   不知道干嘛的
+		 */
 		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(ConfigurationClassPostProcessor.class);
 			def.setSource(source);
@@ -182,6 +194,7 @@ public class AnnotationConfigUtils {
 			beanDefs.add(registerPostProcessor(registry, def, COMMON_ANNOTATION_PROCESSOR_BEAN_NAME));
 		}
 
+		//检查JPA支持，如果需要的话就注册进去
 		// Check for JPA support, and if present add the PersistenceAnnotationBeanPostProcessor.
 		if (jpaPresent && !registry.containsBeanDefinition(PERSISTENCE_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition();
@@ -292,7 +305,7 @@ public class AnnotationConfigUtils {
 	}
 
 	static Set<AnnotationAttributes> attributesForRepeatable(AnnotationMetadata metadata,
-			Class<?> containerClass, Class<?> annotationClass) {
+															 Class<?> containerClass, Class<?> annotationClass) {
 
 		return attributesForRepeatable(metadata, containerClass.getName(), annotationClass.getName());
 	}

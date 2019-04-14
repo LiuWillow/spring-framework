@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2018 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -74,8 +74,8 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 							constructorToUse = AccessController.doPrivileged(
 									(PrivilegedExceptionAction<Constructor<?>>) clazz::getDeclaredConstructor);
 						}
-						else {
-							constructorToUse = clazz.getDeclaredConstructor();
+						else { //获取默认构造函数
+							constructorToUse =	clazz.getDeclaredConstructor();
 						}
 						bd.resolvedConstructorOrFactoryMethod = constructorToUse;
 					}
@@ -83,7 +83,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 						throw new BeanInstantiationException(clazz, "No default constructor found", ex);
 					}
 				}
-			}
+			} //根据构造函数实例化
 			return BeanUtils.instantiateClass(constructorToUse);
 		}
 		else {
@@ -104,7 +104,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 
 	@Override
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner,
-			final Constructor<?> ctor, @Nullable Object... args) {
+							  final Constructor<?> ctor, @Nullable Object... args) {
 
 		if (!bd.hasMethodOverrides()) {
 			if (System.getSecurityManager() != null) {
@@ -128,14 +128,14 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 	 * Instantiation should use the given constructor and parameters.
 	 */
 	protected Object instantiateWithMethodInjection(RootBeanDefinition bd, @Nullable String beanName,
-			BeanFactory owner, @Nullable Constructor<?> ctor, @Nullable Object... args) {
+													BeanFactory owner, @Nullable Constructor<?> ctor, @Nullable Object... args) {
 
 		throw new UnsupportedOperationException("Method Injection not supported in SimpleInstantiationStrategy");
 	}
 
 	@Override
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner,
-			@Nullable Object factoryBean, final Method factoryMethod, @Nullable Object... args) {
+							  @Nullable Object factoryBean, final Method factoryMethod, @Nullable Object... args) {
 
 		try {
 			if (System.getSecurityManager() != null) {
@@ -169,7 +169,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 		catch (IllegalArgumentException ex) {
 			throw new BeanInstantiationException(factoryMethod,
 					"Illegal arguments to factory method '" + factoryMethod.getName() + "'; " +
-					"args: " + StringUtils.arrayToCommaDelimitedString(args), ex);
+							"args: " + StringUtils.arrayToCommaDelimitedString(args), ex);
 		}
 		catch (IllegalAccessException ex) {
 			throw new BeanInstantiationException(factoryMethod,

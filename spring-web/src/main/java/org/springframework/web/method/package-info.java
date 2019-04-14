@@ -1,6 +1,6 @@
 /**
  * Common infrastructure for handler method processing, as used by
- * Spring MVC's {@code org.springframework.web.servlet.mvc.method} package.
+ * Spring MVC's {@code org.springframework.web.servlet.boot.method} package.
  */
 @NonNullApi
 @NonNullFields

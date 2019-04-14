@@ -126,11 +126,11 @@ public class MockMvcWebClientBuilderTests {
 	}
 
 	private void assertMockMvcUsed(WebClient client, String url) throws Exception {
-		assertThat(getResponse(client, url).getContentAsString(), equalTo("mvc"));
+		assertThat(getResponse(client, url).getContentAsString(), equalTo("boot"));
 	}
 
 	private void assertMockMvcNotUsed(WebClient client, String url) throws Exception {
-		assertThat(getResponse(client, url).getContentAsString(), not(equalTo("mvc")));
+		assertThat(getResponse(client, url).getContentAsString(), not(equalTo("boot")));
 	}
 
 	private WebResponse getResponse(WebClient client, String url) throws IOException {
@@ -159,7 +159,7 @@ public class MockMvcWebClientBuilderTests {
 
 			@RequestMapping
 			public String contextPath(HttpServletRequest request) {
-				return "mvc";
+				return "boot";
 			}
 		}
 	}

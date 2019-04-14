@@ -64,7 +64,7 @@ import org.springframework.web.servlet.ModelAndView;
  *   &lt;/property&gt;
  * &lt;/bean&gt;
  *
- * &lt;bean id="strutsWrappingController" class="org.springframework.web.servlet.mvc.ServletWrappingController"&gt;
+ * &lt;bean id="strutsWrappingController" class="org.springframework.web.servlet.boot.ServletWrappingController"&gt;
  *   &lt;property name="servletClass"&gt;
  *     &lt;value&gt;org.apache.struts.action.ActionServlet&lt;/value&gt;
  *   &lt;/property&gt;

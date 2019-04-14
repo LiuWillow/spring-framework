@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -91,24 +91,24 @@ import org.springframework.util.ReflectionUtils;
  * to detect special beans defined in its internal bean factory:
  * Therefore, this class automatically registers
  * {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor BeanFactoryPostProcessors},
- * {@link org.springframework.beans.factory.config.BeanPostProcessor BeanPostProcessors},
+ * {@link org.springframework.beans.factory.config.BeanPostProcessor BeanPostProcessors}
  * and {@link org.springframework.context.ApplicationListener ApplicationListeners}
  * which are defined as beans in the context.
  *
  * <p>A {@link org.springframework.context.MessageSource} may also be supplied
  * as a bean in the context, with the name "messageSource"; otherwise, message
  * resolution is delegated to the parent context. Furthermore, a multicaster
- * for application events can be supplied as an "applicationEventMulticaster" bean
+ * for application events can be supplied as "applicationEventMulticaster" bean
  * of type {@link org.springframework.context.event.ApplicationEventMulticaster}
  * in the context; otherwise, a default multicaster of type
  * {@link org.springframework.context.event.SimpleApplicationEventMulticaster} will be used.
  *
- * <p>Implements resource loading by extending
+ * <p>Implements resource loading through extending
  * {@link org.springframework.core.io.DefaultResourceLoader}.
  * Consequently treats non-URL resource paths as class path resources
  * (supporting full class path resource names that include the package path,
  * e.g. "mypackage/myresource.dat"), unless the {@link #getResourceByPath}
- * method is overridden in a subclass.
+ * method is overwritten in a subclass.
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -392,7 +392,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		else {
 			applicationEvent = new PayloadApplicationEvent<>(this, event);
 			if (eventType == null) {
-				eventType = ((PayloadApplicationEvent<?>) applicationEvent).getResolvableType();
+				eventType = ((PayloadApplicationEvent) applicationEvent).getResolvableType();
 			}
 		}
 
@@ -519,35 +519,41 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			// Prepare this context for refreshing.
 			prepareRefresh();
 
-			// Tell the subclass to refresh the internal bean factory.
+			// 获取DefaultListableBeanFactory
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
-			// Prepare the bean factory for use in this context.
+			// 准备beanFactory必要的一些东西，初始化类加载器、解析器、注册其、beanPostProcessor
+			//忽略一些接口
+			//在beanFactory的manualSingleton里注册environment、systemProperties、systemEnvironment
+			//并将其实例化，放到singletonObjects中
 			prepareBeanFactory(beanFactory);
 
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
+				//空壳方法
 				postProcessBeanFactory(beanFactory);
-
-				// Invoke factory processors registered as beans in the context.
+				//主要执行ConfigurationClassPostProcessor的BeanDefinitionRegistryPostProcessors和beanFactoryPostProcessor
+				// 注册beanPostPostProcessors，扫描componentScan包，把扫描出来的bd注入工厂，
+				// 同时实例化了beanFactoryPostProcessor和Registrar，
+				// 普通的@Service、@Bean之类的还没实例化（但是已经生成了bd）
 				invokeBeanFactoryPostProcessors(beanFactory);
 
-				// Register bean processors that intercept bean creation.
+				// 注册beanPostProcessors并实例化
 				registerBeanPostProcessors(beanFactory);
 
-				// Initialize message source for this context.
+				// 注册并实例化了messageSource
 				initMessageSource();
 
-				// Initialize event multicaster for this context.
+				// 注册并实例化了applicationEventMulticaster
 				initApplicationEventMulticaster();
 
-				// Initialize other special beans in specific context subclasses.
+				// 给父类调用，为空方法
 				onRefresh();
 
-				// Check for listener beans and register them.
+				// 注册监听器
 				registerListeners();
 
-				// Instantiate all remaining (non-lazy-init) singletons.
+				// 实例化所有剩下的单例（非懒加载
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
@@ -639,8 +645,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * Configure the factory's standard context characteristics,
-	 * such as the context's ClassLoader and post-processors.
+	 * 初始化类加载器、解析器、注册其、beanPostProcessor
+	 * 忽略一些接口
+	 * 在beanFactory的manualSingletom里注册environment、systemProperties、systemEnvironment
 	 * @param beanFactory the BeanFactory to configure
 	 */
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
@@ -675,7 +682,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
 		}
 
-		// Register default environment beans.
+		// 在beanFactory的manualSingletom里注册environment、systemProperties、systemEnvironment，实例化后放入singletonObjects
 		if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
 			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
 		}
@@ -703,6 +710,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * <p>Must be called before singleton instantiation.
 	 */
 	protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+		//初始化并执行beanFactoryPostProcessors，读取配置类上的注解信息，扫描@Autowired等注解，把bean放入容器
 		PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
 		// Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime
@@ -714,7 +722,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * Instantiate and register all BeanPostProcessor beans,
+	 * Instantiate and invoke all registered BeanPostProcessor beans,
 	 * respecting explicit order if given.
 	 * <p>Must be called before any instantiation of application beans.
 	 */
@@ -877,7 +885,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// Allow for caching all bean definition metadata, not expecting further changes.
 		beanFactory.freezeConfiguration();
 
-		// Instantiate all remaining (non-lazy-init) singletons.
+		// 这里实例化了所有剩下的单例bean
 		beanFactory.preInstantiateSingletons();
 	}
 
@@ -1243,7 +1251,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	@Nullable
 	public <A extends Annotation> A findAnnotationOnBean(String beanName, Class<A> annotationType)
-			throws NoSuchBeanDefinitionException {
+			throws NoSuchBeanDefinitionException{
 
 		assertBeanFactoryActive();
 		return getBeanFactory().findAnnotationOnBean(beanName, annotationType);

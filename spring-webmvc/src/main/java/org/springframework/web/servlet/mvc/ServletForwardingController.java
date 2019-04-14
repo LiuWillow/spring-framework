@@ -76,7 +76,7 @@ import org.springframework.web.util.WebUtils;
  *   &lt;/property&gt;
  * &lt;/bean&gt;
  *
- * &lt;bean id="myServletForwardingController" class="org.springframework.web.servlet.mvc.ServletForwardingController"&gt;
+ * &lt;bean id="myServletForwardingController" class="org.springframework.web.servlet.boot.ServletForwardingController"&gt;
  *   &lt;property name="servletName"&gt;&lt;value&gt;myServlet&lt;/value&gt;&lt;/property&gt;
  * &lt;/bean&gt;</pre>
  *

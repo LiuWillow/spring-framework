@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -95,8 +95,8 @@ class ConfigurationClassBeanDefinitionReader {
 	 * that will be used to populate the given {@link BeanDefinitionRegistry}.
 	 */
 	ConfigurationClassBeanDefinitionReader(BeanDefinitionRegistry registry, SourceExtractor sourceExtractor,
-			ResourceLoader resourceLoader, Environment environment, BeanNameGenerator importBeanNameGenerator,
-			ImportRegistry importRegistry) {
+										   ResourceLoader resourceLoader, Environment environment, BeanNameGenerator importBeanNameGenerator,
+										   ImportRegistry importRegistry) {
 
 		this.registry = registry;
 		this.sourceExtractor = sourceExtractor;
@@ -143,6 +143,7 @@ class ConfigurationClassBeanDefinitionReader {
 		}
 
 		loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());
+		//获取Import的类，注册里面引用的registrar并调用
 		loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars());
 	}
 
@@ -305,7 +306,7 @@ class ConfigurationClassBeanDefinitionReader {
 		}
 		if (logger.isInfoEnabled()) {
 			logger.info(String.format("Skipping bean definition for %s: a definition for bean '%s' " +
-					"already exists. This top-level bean definition is considered as an override.",
+							"already exists. This top-level bean definition is considered as an override.",
 					beanMethod, beanName));
 		}
 		return true;

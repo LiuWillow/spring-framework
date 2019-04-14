@@ -1,11 +1,11 @@
 /*
- * Copyright 2002-2019 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -313,6 +313,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 			return addCandidateComponentsFromIndex(this.componentsIndex, basePackage);
 		}
 		else {
+			//扫描basePackage，过滤交给Spring管理的基础类（Component、Service之类的）得到候选类bd
 			return scanCandidateComponents(basePackage);
 		}
 	}
@@ -377,7 +378,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 			for (TypeFilter filter : this.includeFilters) {
 				String stereotype = extractStereotype(filter);
 				if (stereotype == null) {
-					throw new IllegalArgumentException("Failed to extract stereotype from " + filter);
+					throw new IllegalArgumentException("Failed to extract stereotype from "+ filter);
 				}
 				types.addAll(index.getCandidateTypes(basePackage, stereotype));
 			}
@@ -416,11 +417,14 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	private Set<BeanDefinition> scanCandidateComponents(String basePackage) {
 		Set<BeanDefinition> candidates = new LinkedHashSet<>();
 		try {
+			//.分隔的包名转换为文件路径
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
 					resolveBasePackage(basePackage) + '/' + this.resourcePattern;
+			//这里拿到了基础包下的所有类资源
 			Resource[] resources = getResourcePatternResolver().getResources(packageSearchPath);
 			boolean traceEnabled = logger.isTraceEnabled();
 			boolean debugEnabled = logger.isDebugEnabled();
+			//遍历，查看哪些类是候选类，这里只扫描Componet、@Service之类的注解以及配置类本身
 			for (Resource resource : resources) {
 				if (traceEnabled) {
 					logger.trace("Scanning " + resource);
@@ -428,6 +432,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 				if (resource.isReadable()) {
 					try {
 						MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
+						//判断是否是Component或者配置类本身
 						if (isCandidateComponent(metadataReader)) {
 							ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
 							sbd.setResource(resource);

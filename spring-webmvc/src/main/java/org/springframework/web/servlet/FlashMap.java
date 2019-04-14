@@ -39,7 +39,7 @@ import org.springframework.util.StringUtils;
  * {@code org.springframework.web.servlet.view.RedirectView} is used.
  *
  * <p>Note: annotated controllers will usually not use FlashMap directly.
- * See {@code org.springframework.web.servlet.mvc.support.RedirectAttributes}
+ * See {@code org.springframework.web.servlet.boot.support.RedirectAttributes}
  * for an overview of using flash attributes in annotated controllers.
  *
  * @author Rossen Stoyanchev

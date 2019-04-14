@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -275,7 +275,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 					catch (Throwable ex) {
 						throw new BeanCreationException(beanName,
 								"Resolution of declared constructors on bean Class [" + beanClass.getName() +
-								"] from ClassLoader [" + beanClass.getClassLoader() + "] failed", ex);
+										"] from ClassLoader [" + beanClass.getClassLoader() + "] failed", ex);
 					}
 					List<Constructor<?>> candidates = new ArrayList<>(rawCandidates.length);
 					Constructor<?> requiredConstructor = null;
@@ -307,16 +307,16 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 							if (requiredConstructor != null) {
 								throw new BeanCreationException(beanName,
 										"Invalid autowire-marked constructor: " + candidate +
-										". Found constructor with 'required' Autowired annotation already: " +
-										requiredConstructor);
+												". Found constructor with 'required' Autowired annotation already: " +
+												requiredConstructor);
 							}
 							boolean required = determineRequiredStatus(ann);
 							if (required) {
 								if (!candidates.isEmpty()) {
 									throw new BeanCreationException(beanName,
 											"Invalid autowire-marked constructors: " + candidates +
-											". Found constructor with 'required' Autowired annotation: " +
-											candidate);
+													". Found constructor with 'required' Autowired annotation: " +
+													candidate);
 								}
 								requiredConstructor = candidate;
 							}
@@ -577,7 +577,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 				Set<String> autowiredBeanNames = new LinkedHashSet<>(1);
 				Assert.state(beanFactory != null, "No BeanFactory available");
 				TypeConverter typeConverter = beanFactory.getTypeConverter();
-				try {
+				try { //处理依赖
 					value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);
 				}
 				catch (BeansException ex) {
@@ -695,7 +695,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 					ReflectionUtils.makeAccessible(method);
 					method.invoke(bean, arguments);
 				}
-				catch (InvocationTargetException ex) {
+				catch (InvocationTargetException ex){
 					throw ex.getTargetException();
 				}
 			}

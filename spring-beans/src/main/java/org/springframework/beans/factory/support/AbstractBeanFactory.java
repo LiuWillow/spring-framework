@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -237,7 +237,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredType,
-			@Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
+							  @Nullable final Object[] args, boolean typeCheckOnly) throws BeansException {
 
 		final String beanName = transformedBeanName(name);
 		Object bean;
@@ -283,11 +283,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 			}
 
-			if (!typeCheckOnly) {
+			if (!typeCheckOnly) {  //在alreadyCreated里add当前beanName
 				markBeanAsCreated(beanName);
 			}
 
-			try {
+			try {  //得到bd
 				final RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				checkMergedBeanDefinition(mbd, beanName, args);
 
@@ -310,7 +310,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					}
 				}
 
-				// Create bean instance.
+				// 创建实例，这里已经处理了循环引用
 				if (mbd.isSingleton()) {
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
@@ -361,7 +361,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					catch (IllegalStateException ex) {
 						throw new BeanCreationException(beanName,
 								"Scope '" + scopeName + "' is not active for the current thread; consider " +
-								"defining a scoped proxy for this bean if you intend to refer to it from a singleton",
+										"defining a scoped proxy for this bean if you intend to refer to it from a singleton",
 								ex);
 					}
 				}
@@ -469,7 +469,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			final FactoryBean<?> fb = (FactoryBean<?>) getBean(FACTORY_BEAN_PREFIX + beanName);
 			if (System.getSecurityManager() != null) {
 				return AccessController.doPrivileged((PrivilegedAction<Boolean>) () ->
-						((fb instanceof SmartFactoryBean && ((SmartFactoryBean<?>) fb).isPrototype()) || !fb.isSingleton()),
+								((fb instanceof SmartFactoryBean && ((SmartFactoryBean<?>) fb).isPrototype()) || !fb.isSingleton()),
 						getAccessControlContext());
 			}
 			else {
@@ -1280,7 +1280,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							else {
 								throw new NoSuchBeanDefinitionException(parentBeanName,
 										"Parent name '" + parentBeanName + "' is equal to bean name '" + beanName +
-										"': cannot be resolved without an AbstractBeanFactory parent");
+												"': cannot be resolved without an AbstractBeanFactory parent");
 							}
 						}
 					}
@@ -1375,7 +1375,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 			if (System.getSecurityManager() != null) {
 				return AccessController.doPrivileged((PrivilegedExceptionAction<Class<?>>) () ->
-					doResolveBeanClass(mbd, typesToMatch), getAccessControlContext());
+						doResolveBeanClass(mbd, typesToMatch), getAccessControlContext());
 			}
 			else {
 				return doResolveBeanClass(mbd, typesToMatch);

@@ -281,13 +281,13 @@ public class UriComponentsBuilderTests {
 		request.setScheme("https");
 		request.setServerName("localhost");
 		request.setServerPort(-1);
-		request.setRequestURI("/mvc-showcase");
+		request.setRequestURI("/boot-showcase");
 		request.addHeader("Forwarded", "host=192.168.0.1");
 
 		HttpRequest httpRequest = new ServletServerHttpRequest(request);
 		UriComponents result = UriComponentsBuilder.fromHttpRequest(httpRequest).build();
 
-		assertEquals("https://192.168.0.1/mvc-showcase", result.toString());
+		assertEquals("https://192.168.0.1/boot-showcase", result.toString());
 	}
 
 	@Test  // SPR-14761
@@ -296,13 +296,13 @@ public class UriComponentsBuilderTests {
 		request.setScheme("http");
 		request.setServerName("localhost");
 		request.setServerPort(-1);
-		request.setRequestURI("/mvc-showcase");
+		request.setRequestURI("/boot-showcase");
 		request.addHeader("Forwarded", "host=[1abc:2abc:3abc::5ABC:6abc]");
 
 		HttpRequest httpRequest = new ServletServerHttpRequest(request);
 		UriComponents result = UriComponentsBuilder.fromHttpRequest(httpRequest).build();
 
-		assertEquals("http://[1abc:2abc:3abc::5ABC:6abc]/mvc-showcase", result.toString());
+		assertEquals("http://[1abc:2abc:3abc::5ABC:6abc]/boot-showcase", result.toString());
 	}
 
 	@Test  // SPR-14761
@@ -311,13 +311,13 @@ public class UriComponentsBuilderTests {
 		request.setScheme("http");
 		request.setServerName("localhost");
 		request.setServerPort(-1);
-		request.setRequestURI("/mvc-showcase");
+		request.setRequestURI("/boot-showcase");
 		request.addHeader("X-Forwarded-Host", "[1abc:2abc:3abc::5ABC:6abc]");
 
 		HttpRequest httpRequest = new ServletServerHttpRequest(request);
 		UriComponents result = UriComponentsBuilder.fromHttpRequest(httpRequest).build();
 
-		assertEquals("http://[1abc:2abc:3abc::5ABC:6abc]/mvc-showcase", result.toString());
+		assertEquals("http://[1abc:2abc:3abc::5ABC:6abc]/boot-showcase", result.toString());
 	}
 
 	@Test  // SPR-14761
@@ -326,13 +326,13 @@ public class UriComponentsBuilderTests {
 		request.setScheme("http");
 		request.setServerName("localhost");
 		request.setServerPort(-1);
-		request.setRequestURI("/mvc-showcase");
+		request.setRequestURI("/boot-showcase");
 		request.addHeader("X-Forwarded-Host", "[1abc:2abc:3abc::5ABC:6abc]:8080");
 
 		HttpRequest httpRequest = new ServletServerHttpRequest(request);
 		UriComponents result = UriComponentsBuilder.fromHttpRequest(httpRequest).build();
 
-		assertEquals("http://[1abc:2abc:3abc::5ABC:6abc]:8080/mvc-showcase", result.toString());
+		assertEquals("http://[1abc:2abc:3abc::5ABC:6abc]:8080/boot-showcase", result.toString());
 	}
 
 	@Test
@@ -341,13 +341,13 @@ public class UriComponentsBuilderTests {
 		request.setScheme("http");
 		request.setServerName("localhost");
 		request.setServerPort(-1);
-		request.setRequestURI("/mvc-showcase");
+		request.setRequestURI("/boot-showcase");
 		request.addHeader("X-Forwarded-Host", "anotherHost");
 
 		HttpRequest httpRequest = new ServletServerHttpRequest(request);
 		UriComponents result = UriComponentsBuilder.fromHttpRequest(httpRequest).build();
 
-		assertEquals("http://anotherHost/mvc-showcase", result.toString());
+		assertEquals("http://anotherHost/boot-showcase", result.toString());
 	}
 
 	@Test  // SPR-10701
@@ -356,7 +356,7 @@ public class UriComponentsBuilderTests {
 		request.setScheme("http");
 		request.setServerName("localhost");
 		request.setServerPort(-1);
-		request.setRequestURI("/mvc-showcase");
+		request.setRequestURI("/boot-showcase");
 		request.addHeader("X-Forwarded-Host", "webtest.foo.bar.com:443");
 
 		HttpRequest httpRequest = new ServletServerHttpRequest(request);
@@ -452,7 +452,7 @@ public class UriComponentsBuilderTests {
 		request.setScheme("http");
 		request.setServerName("localhost");
 		request.setServerPort(80);
-		request.setRequestURI("/mvc-showcase");
+		request.setRequestURI("/boot-showcase");
 		request.addHeader("X-Forwarded-Proto", "https");
 		request.addHeader("X-Forwarded-Host", "84.198.58.199");
 		request.addHeader("X-Forwarded-Port", "443");
@@ -460,7 +460,7 @@ public class UriComponentsBuilderTests {
 		HttpRequest httpRequest = new ServletServerHttpRequest(request);
 		UriComponents result = UriComponentsBuilder.fromHttpRequest(httpRequest).build();
 
-		assertEquals("https://84.198.58.199/mvc-showcase", result.toString());
+		assertEquals("https://84.198.58.199/boot-showcase", result.toString());
 	}
 
 	@Test  // SPR-12813
@@ -469,14 +469,14 @@ public class UriComponentsBuilderTests {
 		request.setScheme("http");
 		request.setServerName("localhost");
 		request.setServerPort(9090);
-		request.setRequestURI("/mvc-showcase");
+		request.setRequestURI("/boot-showcase");
 		request.addHeader("X-Forwarded-Host", "a.example.org");
 		request.addHeader("X-Forwarded-Port", "80,52022");
 
 		HttpRequest httpRequest = new ServletServerHttpRequest(request);
 		UriComponents result = UriComponentsBuilder.fromHttpRequest(httpRequest).build();
 
-		assertEquals("http://a.example.org/mvc-showcase", result.toString());
+		assertEquals("http://a.example.org/boot-showcase", result.toString());
 	}
 
 	@Test  // SPR-12816
@@ -485,7 +485,7 @@ public class UriComponentsBuilderTests {
 		request.setScheme("http");
 		request.setServerName("localhost");
 		request.setServerPort(8080);
-		request.setRequestURI("/mvc-showcase");
+		request.setRequestURI("/boot-showcase");
 		request.addHeader("X-Forwarded-Host", "a.example.org");
 		request.addHeader("X-Forwarded-Port", "443");
 		request.addHeader("X-Forwarded-Proto", "https,https");
@@ -493,7 +493,7 @@ public class UriComponentsBuilderTests {
 		HttpRequest httpRequest = new ServletServerHttpRequest(request);
 		UriComponents result = UriComponentsBuilder.fromHttpRequest(httpRequest).build();
 
-		assertEquals("https://a.example.org/mvc-showcase", result.toString());
+		assertEquals("https://a.example.org/boot-showcase", result.toString());
 	}
 
 	@Test  // SPR-12742
