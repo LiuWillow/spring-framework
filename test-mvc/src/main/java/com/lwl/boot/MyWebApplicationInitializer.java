@@ -10,7 +10,7 @@ import javax.servlet.ServletRegistration;
 
 /**
  * date  2019/4/13
- * author liuwillow
+ * author liuwillow 实现这个接口，可以不需要在service文件夹下面指定
  **/
 public class MyWebApplicationInitializer implements WebApplicationInitializer {
 	@Override

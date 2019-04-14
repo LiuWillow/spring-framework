@@ -24,7 +24,7 @@ public class MyBootApplication {
 		//告诉tomcat你的webapp在哪
 		Context context = tomcat.addWebapp("/", file.getAbsolutePath());
 
-		//告诉tomcat你的classes文件在哪
+		//告诉tomcat你的classes文件在哪，写死就行
 		WebResourceRoot resourceRoot = new StandardRoot(context);
 		resourceRoot.addPreResources(new DirResourceSet(resourceRoot, "/WEB-INF/classes",
 				basePath, "/"));
