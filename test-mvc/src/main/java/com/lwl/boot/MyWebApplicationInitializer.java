@@ -10,7 +10,10 @@ import javax.servlet.ServletRegistration;
 
 /**
  * date  2019/4/13
- * author liuwillow 实现这个接口，可以不需要在service文件夹下面指定
+ * author liuwillow 在spring源码当中已经有一个实现了ServletContainerInitializer的
+ * 类SpringServletContainerInitializer，tomcat启动时会扫描出这个类，调用其中的onStartUp方法，
+ * 而这个方法中遍历了所有实现了WebApplicationInitializer接口的类，并调用这个接口的onStartup方法，
+ * 因此使用者只需要实现这个类即可，不必再手动配置services中的文件
  **/
 public class MyWebApplicationInitializer implements WebApplicationInitializer {
 	@Override
