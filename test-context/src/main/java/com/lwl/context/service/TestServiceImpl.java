@@ -1,5 +1,6 @@
-package com.lwl.context;
+package com.lwl.context.service;
 
+import com.lwl.context.Bean1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

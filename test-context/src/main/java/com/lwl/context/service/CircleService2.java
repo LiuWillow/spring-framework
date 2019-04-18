@@ -1,4 +1,4 @@
-package com.lwl.context;
+package com.lwl.context.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CircleService2 {
 	@Autowired
-	private CircleService1 circleService1;
+	private CircleService1Impl circleService1;
 
 	public CircleService2(){
 

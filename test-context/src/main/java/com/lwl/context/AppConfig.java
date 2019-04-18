@@ -1,9 +1,6 @@
 package com.lwl.context;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 
 /**
  * date  2019/2/17
@@ -12,6 +9,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @ComponentScan("com.lwl")
 @Import(MyImportRegistrar.class)
+@EnableAspectJAutoProxy
 public class AppConfig {
 	@Bean
 	public Bean1 getBean1(){

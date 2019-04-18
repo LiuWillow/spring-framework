@@ -1,6 +1,7 @@
 package com.lwl.context.test;
 
 import com.lwl.context.AppConfig;
+import com.lwl.context.service.CircleService1;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -11,5 +12,7 @@ public class Test {
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext applicationContext =
 				new AnnotationConfigApplicationContext(AppConfig.class);
+		CircleService1 bean = applicationContext.getBean(CircleService1.class);
+		bean.query();
 	}
 }
