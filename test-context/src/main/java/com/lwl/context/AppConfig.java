@@ -9,7 +9,6 @@ import org.springframework.context.annotation.*;
 @Configuration
 @ComponentScan("com.lwl")
 @Import(MyImportRegistrar.class)
-@EnableAspectJAutoProxy
 public class AppConfig {
 	@Bean
 	public Bean1 getBean1(){
