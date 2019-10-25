@@ -545,7 +545,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Allow post-processors to modify the merged bean definition.
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
-				try { //调用Spring内置的几个beanPostProcessor，扫描出了bean内部引用的类型并记录，但是没去处理
+				try {
+					//调用Spring内置的几个beanPostProcessor，扫描出了bean内部引用的类型并记录，但是没去处理
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
@@ -573,6 +574,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			//大名鼎鼎的，注入属性，处理了循环引用
 			populateBean(beanName, mbd, instanceWrapper);
+			//属性注入完后，执行后置处理器和初始化方法
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1687,10 +1689,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		Object wrappedBean = bean;
 		if (mbd == null || !mbd.isSynthetic()) {
+			//先执行processor的postBeforeInitialization
 			wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
 		}
 
 		try {
+			//再执行@PostConstruct/afterPropertiesSet/init方法
 			invokeInitMethods(beanName, wrappedBean, mbd);
 		}
 		catch (Throwable ex) {
